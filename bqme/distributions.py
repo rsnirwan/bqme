@@ -3,9 +3,11 @@ from bqme.variables import ContinuousVariable, PositivContinuousVariable
 class Distribution:
     """
     Base class for all distribution
+    Key and values of `parameters_dict` needs the same order as the 
+    input to the distribution in stan.
     """
     def __init__(self,
-            parameters_dict: 'dict used for printing only',
+            parameters_dict: dict,
             name: str):
         self.name = name
         self.parameters_dict = parameters_dict
@@ -19,6 +21,36 @@ class Distribution:
 
     def __repr__(self):
         return self.__str__()
+
+    def domain(self): pass
+
+    def _stan_code(self) -> dict:
+        #real is hard coded
+
+        #parameter initialization
+        lower, upper = self.domain()
+        parameter = f'real$ {self.name};'
+        l = f'lower={lower}' if lower > float('-inf') else ''
+        r = f'upper={upper}' if upper < float('inf') else ''
+        if l and r:
+            parameter = parameter.replace('$', f'<{l}, {r}>')
+        elif l or r:
+            parameter = parameter.replace('$', f'<{l if l else r}>')
+        else:
+            parameter = parameter.replace('$', '')
+
+        #prior
+        values = ", ".join([
+            str(param.value) for param in self.parameters_dict.values()
+            ])
+        prior = f'{self.name} ~ {self.__class__.__name__.lower()}({values});'
+
+        return {'parameter':parameter, 'prior':prior}
+
+
+    def code(self) -> dict:
+        return self._stan_code()
+
 
 
 class Normal(Distribution):
@@ -35,6 +67,9 @@ class Normal(Distribution):
         parameters_dict = {'mu': self.mu, 'sigma': self.sigma}
         super().__init__(parameters_dict, self.name)
 
+    def domain(self) -> (float, float):
+        return [float('-inf'), float('inf')]
+
 
 class Gamma(Distribution):
     """
@@ -49,3 +84,6 @@ class Gamma(Distribution):
         self.name = name
         parameters_dict = {'alpha':self.alpha, 'beta':self.beta}
         super().__init__(parameters_dict, self.name)
+
+    def domain(self) -> (float, float):
+        return [0, float('inf')]
