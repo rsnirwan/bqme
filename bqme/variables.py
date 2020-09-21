@@ -25,7 +25,7 @@ class ContinuousVariable(Variable):
         super().__init__(value, name, lower, upper)
 
 
-class PositivContinousVariable(Variable):
+class PositivContinuousVariable(Variable):
     """
     container for positive continous variables (0, inf)
     """

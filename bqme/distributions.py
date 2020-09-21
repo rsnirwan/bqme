@@ -1,4 +1,4 @@
-from bqme.variables import ContinuousVariable, PositivContinousVariable
+from bqme.variables import ContinuousVariable, PositivContinuousVariable
 
 class Distribution:
     """
@@ -30,7 +30,7 @@ class Normal(Distribution):
             sigma: float,
             name: str):
         self.mu = ContinuousVariable(mu, name='mu')
-        self.sigma = PositivContinousVariable(sigma, name='sigma')
+        self.sigma = PositivContinuousVariable(sigma, name='sigma')
         self.name = name
         parameters_dict = {'mu': self.mu, 'sigma': self.sigma}
         super().__init__(parameters_dict, self.name)
@@ -40,12 +40,12 @@ class Gamma(Distribution):
     """
     Container for Gamma Distribution
     """
-    def __init(self, 
+    def __init__(self, 
             alpha: float,
             beta: float,
             name: str):
-        self.alpha = PositivContinousVariable(alpha, name='alpha')
-        self.beta = PositivContinousVariable(alpha, name='beta')
+        self.alpha = PositivContinuousVariable(alpha, name='alpha')
+        self.beta = PositivContinuousVariable(beta, name='beta')
         self.name = name
         parameters_dict = {'alpha':self.alpha, 'beta':self.beta}
         super().__init__(parameters_dict, self.name)
