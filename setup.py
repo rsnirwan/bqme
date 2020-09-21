@@ -15,12 +15,16 @@ setuptools.setup(
     packages=setuptools.find_packages(),
     classifiers=[
         "Programming Language :: Python :: 3",
-        "License :: GPLv3",
+        "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
         "Operating System :: OS Independent",
     ],
     python_requires='>=3.6',
     install_requires=[
-        'pystan',
+        'pystan>=2.19',
     ],
-    tests_require=['pytest'],
+    extras_require={
+        "dev":[
+            "pytest>=6.0",
+        ],
+    },
 )

@@ -14,6 +14,13 @@ cd bqme
 pip install .
 ```
 
+Install with dev dependencies 
+
+```shell
+pip install -e .[dev]
+```
+if using ZSH, do the following  `pip install -e ".[dev]"`
+
 
 ## Usage
 
@@ -21,16 +28,16 @@ To fit a Normal distribution to observed quantile data, we do
 
 ```python
 from bqme.distributions import Normal, Gamma
-from bqme.models import Normal_qm
+from bqme.models import NormalQM
 
 N, q, X = 100, [0.25, 0.5, 0.75], [-0.1, 0.3, 0.8]
 
-# define prior
+# define priors
 mu = Normal(0, 1, name='mu')
-sigma = Gamma(0, 1, name='sigma)
+sigma = Gamma(1, 1, name='sigma)
 
 # define likelihood
-model = Normal_qm(mu, sigma)
+model = NormalQM(mu, sigma)
 
 # fit model
 fit = model.sampling(N, q, X)
@@ -39,4 +46,6 @@ fit = model.sampling(N, q, X)
 ## Todos
 
 - [ ] make package available on PyPI
+- [ ] add code coverage
+- [ ] testing with nox
 - [ ] use sphinx as documentation tool
