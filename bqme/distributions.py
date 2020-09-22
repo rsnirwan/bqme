@@ -1,7 +1,8 @@
 from typing import Dict, Tuple
 
-from bqme.variables import ContinuousVariable, PositivContinuousVariable
+from bqme.variables import ContinuousVariable, PositiveContinuousVariable
 from bqme.variables import Variable
+
 
 class Distribution:
     """
@@ -72,7 +73,7 @@ class Normal(Distribution):
             sigma: float,
             name: str):
         self.mu = ContinuousVariable(mu, name='mu')
-        self.sigma = PositivContinuousVariable(sigma, name='sigma')
+        self.sigma = PositiveContinuousVariable(sigma, name='sigma')
         self.name = name
         parameters_dict = {'mu': self.mu, 'sigma': self.sigma}
         super().__init__(parameters_dict, self.name)
@@ -96,8 +97,8 @@ class Gamma(Distribution):
             alpha: float,
             beta: float,
             name: str):
-        self.alpha = PositivContinuousVariable(alpha, name='alpha')
-        self.beta = PositivContinuousVariable(beta, name='beta')
+        self.alpha = PositiveContinuousVariable(alpha, name='alpha')
+        self.beta = PositiveContinuousVariable(beta, name='beta')
         self.name = name
         parameters_dict = {'alpha':self.alpha, 'beta':self.beta}
         super().__init__(parameters_dict, self.name)

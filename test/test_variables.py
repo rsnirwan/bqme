@@ -1,5 +1,5 @@
 import pytest
-from bqme.variables import ContinuousVariable, PositivContinuousVariable
+from bqme.variables import ContinuousVariable, PositiveContinuousVariable
 
 def test_continuousVariable():
     mu = ContinuousVariable(-1., name='mu')
@@ -8,14 +8,14 @@ def test_continuousVariable():
     assert mu.upper == float('inf')
     assert mu.lower == float('-inf')
 
-def test_PositivContinuousVariable():
-    sigma = PositivContinuousVariable(1., name='sigma')
+def test_PositiveContinuousVariable():
+    sigma = PositiveContinuousVariable(1., name='sigma')
     assert sigma.value == 1.
     assert sigma.name == 'sigma'
     assert sigma.upper == float('inf')
     assert sigma.lower == 0.
 
-def test_PositivContinuousVariable_expected_fail():
+def test_PositiveContinuousVariable_expected_fail():
     with pytest.raises(ValueError):
-        PositivContinuousVariable(-1., name='sigma')
+        PositiveContinuousVariable(-1., name='sigma')
 
