@@ -1,4 +1,7 @@
+from typing import Dict, Tuple
+
 from bqme.variables import ContinuousVariable, PositivContinuousVariable
+from bqme.variables import Variable
 
 class Distribution:
     """
@@ -7,7 +10,7 @@ class Distribution:
     input to the distribution in stan.
     """
     def __init__(self,
-            parameters_dict: dict,
+            parameters_dict: Dict[str, Variable],
             name: str):
         self.name = name
         self.parameters_dict = parameters_dict
@@ -24,7 +27,7 @@ class Distribution:
 
     def domain(self): pass
 
-    def _stan_code(self) -> dict:
+    def _stan_code(self) -> Dict[str, str]:
         #real is hard coded
 
         #parameter initialization
@@ -48,7 +51,7 @@ class Distribution:
         return {'parameter':parameter, 'prior':prior}
 
 
-    def code(self) -> dict:
+    def code(self) -> Dict[str, str]:
         return self._stan_code()
 
 
@@ -67,8 +70,8 @@ class Normal(Distribution):
         parameters_dict = {'mu': self.mu, 'sigma': self.sigma}
         super().__init__(parameters_dict, self.name)
 
-    def domain(self) -> (float, float):
-        return [float('-inf'), float('inf')]
+    def domain(self) -> Tuple[float, float]:
+        return (float('-inf'), float('inf'))
 
 
 class Gamma(Distribution):
@@ -85,5 +88,5 @@ class Gamma(Distribution):
         parameters_dict = {'alpha':self.alpha, 'beta':self.beta}
         super().__init__(parameters_dict, self.name)
 
-    def domain(self) -> (float, float):
-        return [0, float('inf')]
+    def domain(self) -> Tuple[float, float]:
+        return (0, float('inf'))
