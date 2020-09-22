@@ -59,6 +59,13 @@ class Distribution:
 class Normal(Distribution):
     """
     Container for Normal Distribution
+
+    Examples
+    ________
+    >>> Normal(0, 1, name='mu')
+    Normal(mu=0, sigma=1, name="mu")
+    >>> Normal(0, 1, name='mu').code()
+    {'parameter': 'real mu;', 'prior': 'mu ~ normal(0, 1);'}
     """
     def __init__(self,
             mu: float,
@@ -77,6 +84,13 @@ class Normal(Distribution):
 class Gamma(Distribution):
     """
     Container for Gamma Distribution
+
+    Examples
+    ________
+    >>> Gamma(1., 1., name='sigma')
+    Gamma(alpha=1.0, beta=1.0, name="sigma")
+    >>> Gamma(1.1, 1.0, name='sigma').code()
+    {'parameter': 'real<lower=0> sigma;', 'prior': 'sigma ~ gamma(1.1, 1.0);'}
     """
     def __init__(self, 
             alpha: float,
