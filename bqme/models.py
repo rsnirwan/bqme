@@ -1,7 +1,13 @@
+import multiprocessing
 from typing import Dict, Tuple
+
+from pystan import StanModel
 
 from bqme.distributions import Distribution
 from bqme.settings import STAN_TEMPLATE_PATH
+
+
+multiprocessing.set_start_method("fork") #mac has diffrerent default
 
 
 class QM:
@@ -63,14 +69,13 @@ class QM:
         return self._stan_code()
 
     def compile(self):
-        pass
-        #self.model = 
+        self.model = StanModel(model_code=self.code())
 
-    def sampling(self, N, q, X):
+    def sampling(self, N:int, q:Tuple[float,...], X:Tuple[float,...]) -> 'StanFit4Model':
         if self.model is None:
             self.compile()
-        #do something
-        pass
+        data_dict = {'N':N, 'M':len(q), 'q':q, 'X':X}
+        return self.model.sampling(data=data_dict)
 
 
 class NormalQM(QM):
