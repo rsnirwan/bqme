@@ -2,7 +2,7 @@ from bqme.distributions import Normal, Gamma
 from bqme.models import NormalQM
 from bqme.settings import BASE_DIR
 
-FILLED_TEMPLATES_PATH = BASE_DIR.parent / 'test' / 'filled_templates'
+FILLED_TEMPLATES_PATH = BASE_DIR / 'test' / 'filled_templates'
 
 def test_normalQM_print():
     mu = Normal(0., 1., name='mu')
