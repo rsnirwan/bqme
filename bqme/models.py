@@ -64,6 +64,7 @@ class QM:
 
     def domain(self): pass
 
+    @property
     def code(self) -> str:
         """ returns the final stan code """
         return self._stan_code()

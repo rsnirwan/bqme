@@ -34,7 +34,7 @@ N, q, X = 100, [0.25, 0.5, 0.75], [-0.1, 0.3, 0.8]
 
 # define priors
 mu = Normal(0, 1, name='mu')
-sigma = Gamma(1, 1, name='sigma)
+sigma = Gamma(1, 1, name='sigma')
 
 # define likelihood
 model = NormalQM(mu, sigma)
