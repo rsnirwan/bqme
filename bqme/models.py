@@ -70,13 +70,19 @@ class QM:
         return self._stan_code()
 
     def compile(self):
-        self.model = StanModel(model_code=self.code())
+        self.model = StanModel(model_code=self.code)
 
     def sampling(self, N:int, q:Tuple[float,...], X:Tuple[float,...]) -> 'StanFit4Model':
         if self.model is None:
             self.compile()
         data_dict = {'N':N, 'M':len(q), 'q':q, 'X':X}
         return self.model.sampling(data=data_dict)
+
+    def optimizing(self, N:int, q:Tuple[float,...], X:Tuple[float,...]) -> 'StanFit4Model':
+        if self.model is None:
+            self.compile()
+        data_dict = {'N':N, 'M':len(q), 'q':q, 'X':X}
+        return self.model.optimizing(data=data_dict)
 
 
 class NormalQM(QM):

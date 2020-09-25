@@ -27,7 +27,7 @@ def test_normal_code():
     mu = Normal(0., 1., name='mu')
     sigma = Gamma(1., 1.2, name='sigma')
     model = NormalQM(mu, sigma)
-    code = model.code()
+    code = model.code
     with open(FILLED_TEMPLATES_PATH / 'os_normal.stan') as f:
         code_hard_coded = f.read()
     assert code == code_hard_coded
@@ -40,5 +40,13 @@ def test_normal_sampling():
     samples = model.sampling(N, q, X)
     dic = samples.extract(['mu', 'sigma'])
     assert -0.01 < dic['mu'].mean() < 0.01
+
+def test_normal_optimizing():
+    mu = Normal(0., 1., name='mu')
+    sigma = Gamma(1., 1.2, name='sigma')
+    model = NormalQM(mu, sigma)
+    N, q, X = 1000, [0.25, 0.5, 0.75], [-0.1, 0.0, 0.1]
+    opt = model.optimizing(N, q, X)
+    assert -0.01 < opt['mu'].mean() < 0.01
 
 
