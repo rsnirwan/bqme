@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="bqme",
-    version="0.0.1",
+    version="0.0.2",
     author="Rajbir Singh Nirwan",
     author_email="rajbir.nirwan@gmail.com",
     description="Bayesian Quanile Matching Estimation",
