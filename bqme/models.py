@@ -22,7 +22,7 @@ class QM:
         defined Distributions. Note key must not be identical to value.name.
     """
     def __init__(self, parameters_dict: Dict[str, Distribution]):
-        self.parameters_dict = parameters_dict
+        self.parameters_dict = self._check_dict(parameters_dict)
         self.model = None
 
     def __str__(self):
@@ -32,6 +32,12 @@ class QM:
 
     def __repr__(self):
         return self.__str__()
+
+    def _check_dict(self, parameters_dict):
+        for key, value in parameters_dict.items():
+            if not isinstance(value, Distribution):
+                raise ValueError(f'Input parameter "{key}" of "{self.__class__.__name__}" needs to be a Distribution (see bqme.distributions), but is of type {type(value)}.')
+        return parameters_dict
 
     def _template_replacements(self) -> Dict['str', 'str']:
         """

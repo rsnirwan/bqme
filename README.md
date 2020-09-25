@@ -75,9 +75,25 @@ mu_opt = opt['mu']
 sigma_opt = opt['sigma']
 ```
 
+## (so far) Available distributions (prior) and models
+
+distributions/priors (import from `bqme.distributions`): 
+
+* `Normal(mu:float, sigma:float)`
+* `Gamma(alpha:float, beta:float)`
+
+models (import from `bqme.models`):
+
+* `NormalQM(mu:distribution, sigma:distribution)`
+
+Inputs to the models need to be distributions.
+
 ## Todos
 
 - [ ] make package available on PyPI
+- [ ] tag/release on github
 - [ ] add code coverage
 - [ ] testing with nox
 - [ ] use sphinx as documentation tool
+- [ ] add Mixture-model
+- [ ] implement fit.ppf(q), fit.cdf(x), fit.pdf(x), ...

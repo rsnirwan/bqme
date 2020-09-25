@@ -1,8 +1,20 @@
+import pytest
+
 from bqme.distributions import Normal, Gamma
-from bqme.models import NormalQM
+from bqme.models import NormalQM, QM
 from bqme.settings import BASE_DIR
 
 FILLED_TEMPLATES_PATH = BASE_DIR / 'test' / 'filled_templates'
+
+def test_QM_expected_fail():
+    '''input not of type Distribtion'''
+    parameters_dict = {
+        'a': Normal(0., 1., name='a'),
+        'b': 1.
+    }
+    with pytest.raises(ValueError):
+        QM(parameters_dict)
+
 
 def test_normalQM_print():
     mu = Normal(0., 1., name='mu')
