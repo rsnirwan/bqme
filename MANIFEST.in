@@ -1,1 +1,3 @@
 include *.txt
+include bqme/*.stan
+include test/filled_templates/*.stan

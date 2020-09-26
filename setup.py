@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="bqme",
-    version="0.0.2",
+    version="0.0.3",
     author="Rajbir Singh Nirwan",
     author_email="rajbir.nirwan@gmail.com",
     description="Bayesian Quanile Matching Estimation",
@@ -27,4 +27,8 @@ setuptools.setup(
             "pytest>=6.0",
         ],
     },
+    package_data={
+        'bqme':['stan_code_template.stan',],
+    },
+    include_package_data=True,
 )
