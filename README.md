@@ -81,13 +81,22 @@ sigma_opt = opt['sigma']
 
 distributions/priors (import from `bqme.distributions`): 
 
-* `Normal(mu:float, sigma:float)`
-* `Gamma(alpha:float, beta:float)`
+* [x] `Normal(mu:float, sigma:float, name:str)`
+* [x] `Gamma(alpha:float, beta:float, name:str)`
+* [ ] `Lognormal`
+* [ ] `InvGamma`
+* [ ] `Weibull`
+* [ ] `...`
+
 
 models/likelihoods (import from `bqme.models`):
 
-* `NormalQM(mu:distribution, sigma:distribution)`
-* `GammaQM(alpha:distribution, beta:distribution)`
+* [x] `NormalQM(mu:distribution, sigma:distribution)`
+* [x] `GammaQM(alpha:distribution, beta:distribution)` (on develop branch only)
+* [ ] `LognormalQM`
+* [ ] `InvGammaQM`
+* [ ] `WeibullQM`
+* [ ] `...`
 
 Inputs to the models need to be distributions.
 
