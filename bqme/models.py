@@ -68,6 +68,12 @@ class QM:
             code = code.replace(f'${k}$', v)
         return code
 
+    def _check_domain(self, X):
+        minn, maxx = self.domain()
+        f = lambda x: not(minn < x < maxx)
+        if len(list(filter(f, X))) > 0:
+            raise ValueError(f'some elements of X are not in the domain of the model, which is ({minn}, {maxx}).')
+
     def domain(self): pass
 
     @property
@@ -79,14 +85,14 @@ class QM:
         self.model = StanModel(model_code=self.code)
 
     def sampling(self, N:int, q:Tuple[float,...], X:Tuple[float,...]) -> 'StanFit4Model':
-        if self.model is None:
-            self.compile()
+        self._check_domain(X)
+        if self.model is None: self.compile()
         data_dict = {'N':N, 'M':len(q), 'q':q, 'X':X}
         return self.model.sampling(data=data_dict)
 
     def optimizing(self, N:int, q:Tuple[float,...], X:Tuple[float,...]) -> 'StanFit4Model':
-        if self.model is None:
-            self.compile()
+        self._check_domain(X)
+        if self.model is None: self.compile()
         data_dict = {'N':N, 'M':len(q), 'q':q, 'X':X}
         return self.model.optimizing(data=data_dict)
 
@@ -94,6 +100,21 @@ class QM:
 class NormalQM(QM):
     """
     Quantile matching using Normal distribution
+
+    Parameters
+    ----------
+    mu : Distribution
+        location of the Normal
+    sigma : Distribution
+        scale of the Normal
+
+    Examples
+    --------
+    >>> from bqme.distributions import Normal, Gamma
+    >>> model = NormalQM(Normal(0., 1., 'mu'), Gamma(1., 1., 'sigma'))
+    >>> model
+    NormalQM(Normal(mu=0.0, sigma=1.0, name="mu"), Gamma(alpha=1.0, beta=1.0, name="sigma"))
+    >>> code = model.code
     """
     def __init__(self, mu:Distribution, sigma:Distribution):
         self.mu = mu
@@ -103,4 +124,33 @@ class NormalQM(QM):
 
     def domain(self) -> Tuple[float, float]:
         return (float('-inf'), float('inf'))
+
+
+class GammaQM(QM):
+    """
+    Quantile matching using Gamma distribution
+
+    Parameters
+    ----------
+    alpha : Distribution
+        Also called the shape of the Gamma
+    beta : Distribution
+        Also called the rate of the Gamma
+
+    Examples
+    --------
+    >>> from bqme.distributions import Gamma
+    >>> model = GammaQM(Gamma(1., 1. ,'alpha'), Gamma(1., 1., 'beta'))
+    >>> model
+    GammaQM(Gamma(alpha=1.0, beta=1.0, name="alpha"), Gamma(alpha=1.0, beta=1.0, name="beta"))
+    >>> code = model.code
+    """
+    def __init__(self, alpha:Distribution, beta:Distribution):
+        self.alpha = alpha
+        self.beta = beta
+        parameters_dict = {'alpha': self.alpha, 'beta': self.beta}
+        super().__init__(parameters_dict)
+
+    def domain(self) -> Tuple[float, float]:
+        return (0, float('inf'))
 

@@ -77,16 +77,17 @@ mu_opt = opt['mu']
 sigma_opt = opt['sigma']
 ```
 
-## (so far) Available prior distributions and models
+## (so far) Available prior distributions and likelihoods
 
 distributions/priors (import from `bqme.distributions`): 
 
 * `Normal(mu:float, sigma:float)`
 * `Gamma(alpha:float, beta:float)`
 
-models (import from `bqme.models`):
+models/likelihoods (import from `bqme.models`):
 
 * `NormalQM(mu:distribution, sigma:distribution)`
+* `GammaQM(alpha:distribution, beta:distribution)`
 
 Inputs to the models need to be distributions.
 

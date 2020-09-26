@@ -1,7 +1,7 @@
 import pytest
 
 from bqme.distributions import Normal, Gamma
-from bqme.models import NormalQM, QM
+from bqme.models import QM, NormalQM, GammaQM
 from bqme.settings import BASE_DIR
 
 FILLED_TEMPLATES_PATH = BASE_DIR / 'test' / 'filled_templates'
@@ -10,11 +10,13 @@ def test_QM_expected_fail():
     '''input not of type Distribtion'''
     parameters_dict = {
         'a': Normal(0., 1., name='a'),
-        'b': 1.
+        'b': 1.   # input should be a Distribution
     }
     with pytest.raises(ValueError):
         QM(parameters_dict)
 
+
+### NormalQM tests
 
 def test_normalQM_print():
     mu = Normal(0., 1., name='mu')
@@ -44,21 +46,67 @@ def test_normal_code():
         code_hard_coded = f.read()
     assert code == code_hard_coded
 
-def test_normal_sampling():
+@pytest.fixture(scope='module')
+def normal_compiled_model():
     mu = Normal(0., 1., name='mu')
     sigma = Gamma(1., 1.2, name='sigma')
     model = NormalQM(mu, sigma)
+    model.compile()
+    return  model
+
+@pytest.mark.slow
+def test_normal_sampling(normal_compiled_model):
     N, q, X = 1000, [0.25, 0.5, 0.75], [-0.1, 0.0, 0.1]
-    samples = model.sampling(N, q, X)
+    samples = normal_compiled_model.sampling(N, q, X)
     dic = samples.extract(['mu', 'sigma'])
     assert -0.01 < dic['mu'].mean() < 0.01
 
-def test_normal_optimizing():
-    mu = Normal(0., 1., name='mu')
-    sigma = Gamma(1., 1.2, name='sigma')
-    model = NormalQM(mu, sigma)
+@pytest.mark.slow
+def test_normal_optimizing(normal_compiled_model):
     N, q, X = 1000, [0.25, 0.5, 0.75], [-0.1, 0.0, 0.1]
-    opt = model.optimizing(N, q, X)
+    opt = normal_compiled_model.optimizing(N, q, X)
     assert -0.01 < opt['mu'].mean() < 0.01
 
+
+### GammaQM tests
+
+def test_gamma_code():
+    alpha = Gamma(1.0, 1.2, name='alpha')
+    beta = Gamma(2.1, 2.2, name='beta')
+    model = GammaQM(alpha, beta)
+    code = model.code
+    with open(FILLED_TEMPLATES_PATH / 'os_gamma.stan') as f:
+        code_hard_coded = f.read()
+    assert code == code_hard_coded
+
+def test_gamma_check_domain_expected_fail():
+    alpha = Gamma(1.0, 1.2, name='alpha')
+    beta = Gamma(2.1, 2.2, name='beta')
+    model = GammaQM(alpha, beta)
+    N, q, X = 1000, [0.25, 0.5, 0.75], [-0.1, 1.0, 1.4] #-0.1 is invalid
+    with pytest.raises(ValueError):
+        model.sampling(N, q, X)
+    with pytest.raises(ValueError):
+        model.optimizing(N, q, X)
+
+@pytest.fixture(scope='module')
+def gamma_compiled_model():
+    alpha = Gamma(1., 1., name='alpha')
+    beta = Gamma(1., 1., name='beta')
+    model = GammaQM(alpha, beta)
+    model.compile()
+    return  model
+
+@pytest.mark.slow
+def test_gamma_sampling(gamma_compiled_model):
+    N, q, X = 1000, [0.25, 0.5, 0.75], [0.1, 1.0, 1.4]
+    samples = gamma_compiled_model.sampling(N, q, X)
+    dic = samples.extract(['alpha', 'beta'])
+    assert dic['alpha'].mean() > 0.
+
+@pytest.mark.slow
+def test_gamma_optimizing(gamma_compiled_model):
+    N, q, X = 1000, [0.25, 0.5, 0.75], [0.1, 1.0, 1.4]
+    opt = gamma_compiled_model.optimizing(N, q, X)
+    assert opt['alpha'].mean() > 0.
 
