@@ -83,7 +83,7 @@ distributions/priors (import from `bqme.distributions`):
 
 * [x] `Normal(mu:float, sigma:float, name:str)`
 * [x] `Gamma(alpha:float, beta:float, name:str)`
-* [ ] `Lognormal`
+* [x] `Lognormal(mu:float, sigma:float, name:str)` (on develop branch)
 * [ ] `InvGamma`
 * [ ] `Weibull`
 * [ ] `...`
@@ -92,8 +92,8 @@ distributions/priors (import from `bqme.distributions`):
 models/likelihoods (import from `bqme.models`):
 
 * [x] `NormalQM(mu:distribution, sigma:distribution)`
-* [x] `GammaQM(alpha:distribution, beta:distribution)` (on develop branch only)
-* [ ] `LognormalQM`
+* [x] `GammaQM(alpha:distribution, beta:distribution)` (on develop branch)
+* [x] `LognormalQM(mu:distribution, sigma:distribution)` (on develop branch)
 * [ ] `InvGammaQM`
 * [ ] `WeibullQM`
 * [ ] `...`
