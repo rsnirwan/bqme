@@ -154,3 +154,32 @@ class GammaQM(QM):
     def domain(self) -> Tuple[float, float]:
         return (0, float('inf'))
 
+
+class LognormalQM(QM):
+    """
+    Quantile matching using Lognormal distribution
+
+    Parameters
+    ----------
+    mu : Distribution
+        location of the corresponding Normal distribution
+    sigma : Distribution
+        sclae of the corresponding Normal distribution
+
+    Examples
+    --------
+    >>> from bqme.distributions import Lognormal, Normal
+    >>> model = LognormalQM(Normal(1., 1. ,'mu'), Lognormal(1., 1., 'sigma'))
+    >>> model
+    LognormalQM(Normal(mu=1.0, sigma=1.0, name="mu"), Lognormal(mu=1.0, sigma=1.0, name="sigma"))
+    >>> code = model.code
+    """
+    def __init__(self, mu:Distribution, sigma:Distribution):
+        self.mu = mu
+        self.sigma = sigma
+        parameters_dict = {'mu': self.mu, 'sigma': self.sigma}
+        super().__init__(parameters_dict)
+
+    def domain(self) -> Tuple[float, float]:
+        return (0, float('inf'))
+

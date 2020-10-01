@@ -1,7 +1,7 @@
 import pytest
 
-from bqme.distributions import Normal, Gamma
-from bqme.models import QM, NormalQM, GammaQM
+from bqme.distributions import Normal, Gamma, Lognormal
+from bqme.models import QM, NormalQM, GammaQM, LognormalQM
 from bqme.settings import BASE_DIR
 
 FILLED_TEMPLATES_PATH = BASE_DIR / 'tests' / 'filled_templates'
@@ -23,6 +23,7 @@ def test_normalQM_print():
     sigma = Gamma(1., 1., name='sigma')
     model = NormalQM(mu, sigma)
     assert str(model) == 'NormalQM(Normal(mu=0.0, sigma=1.0, name="mu"), Gamma(alpha=1.0, beta=1.0, name="sigma"))'
+    assert repr(model) == 'NormalQM(Normal(mu=0.0, sigma=1.0, name="mu"), Gamma(alpha=1.0, beta=1.0, name="sigma"))'
 
 def test_normalQM_template_replacements():
     mu = Normal(0., 1., name='loc')
@@ -109,4 +110,46 @@ def test_gamma_optimizing(gamma_compiled_model):
     N, q, X = 1000, [0.25, 0.5, 0.75], [0.1, 1.0, 1.4]
     opt = gamma_compiled_model.optimizing(N, q, X)
     assert opt['alpha'].mean() > 0.
+
+### LognormalQM tests
+
+def test_lognormal_code():
+    mu = Normal(1.0, 1.2, name='mu')
+    sigma = Lognormal(2.1, 2.2, name='sigma')
+    model = LognormalQM(mu, sigma)
+    code = model.code
+    with open(FILLED_TEMPLATES_PATH / 'os_lognormal.stan') as f:
+        code_hard_coded = f.read()
+    assert code == code_hard_coded
+
+def test_lognormal_check_domain_expected_fail():
+    mu = Normal(1.0, 1.2, name='mu')
+    sigma = Lognormal(2.1, 2.2, name='sigma')
+    model = LognormalQM(mu, sigma)
+    N, q, X = 1000, [0.25, 0.5, 0.75], [-0.1, 1.0, 1.4] #-0.1 is invalid
+    with pytest.raises(ValueError):
+        model.sampling(N, q, X)
+    with pytest.raises(ValueError):
+        model.optimizing(N, q, X)
+
+@pytest.fixture(scope='module')
+def lognormal_compiled_model():
+    mu = Normal(1., 1., name='mu')
+    sigma = Lognormal(1., 1., name='sigma')
+    model = LognormalQM(mu, sigma)
+    model.compile()
+    return  model
+
+@pytest.mark.slow
+def test_lognormal_sampling(lognormal_compiled_model):
+    N, q, X = 1000, [0.25, 0.5, 0.75], [0.1, 1.0, 1.4]
+    samples = lognormal_compiled_model.sampling(N, q, X)
+    dic = samples.extract(['mu', 'sigma'])
+    assert dic['mu'].mean() > -1.
+
+@pytest.mark.slow
+def test_lognormal_optimizing(lognormal_compiled_model):
+    N, q, X = 1000, [0.25, 0.5, 0.75], [0.1, 1.0, 1.4]
+    opt = lognormal_compiled_model.optimizing(N, q, X)
+    assert opt['mu'].mean() > -1.
 
