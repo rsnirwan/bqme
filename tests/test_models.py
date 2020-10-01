@@ -4,7 +4,7 @@ from bqme.distributions import Normal, Gamma
 from bqme.models import QM, NormalQM, GammaQM
 from bqme.settings import BASE_DIR
 
-FILLED_TEMPLATES_PATH = BASE_DIR / 'test' / 'filled_templates'
+FILLED_TEMPLATES_PATH = BASE_DIR / 'tests' / 'filled_templates'
 
 def test_QM_expected_fail():
     '''input not of type Distribtion'''

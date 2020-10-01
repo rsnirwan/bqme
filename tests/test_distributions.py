@@ -1,5 +1,5 @@
 import pytest
-from bqme.distributions import Normal, Gamma
+from bqme.distributions import Normal, Gamma, Lognormal
 
 def test_normal_print():
     mu = Normal(0, 1, name='mu')
@@ -29,7 +29,25 @@ def test_gamma_code():
         }
     assert code == exp_out
 
-def test_wrong_initialization_expected_fail():
+def test_lognormal_print():
+    mu = Lognormal(1, 1, name='mu')
+    sigma = Lognormal(1, 1.2, name='s')
+    assert str(mu) == 'Lognormal(mu=1, sigma=1, name="mu")'
+    assert str(sigma) == 'Lognormal(mu=1, sigma=1.2, name="s")'
+    assert repr(mu) == 'Lognormal(mu=1, sigma=1, name="mu")'
+    assert repr(sigma) == 'Lognormal(mu=1, sigma=1.2, name="s")'
+
+def test_lognormal_code():
+    code = Lognormal(1, 1., name='sigma').code()
+    exp_out = {
+            'parameter': 'real<lower=0> sigma;',
+            'prior': 'sigma ~ lognormal(1, 1.0);'
+        }
+    assert code == exp_out
+
+### EXPEXTED FAILS
+
+def test_wrong_initialization():
     with pytest.raises(ValueError):
         Normal(0, 0, name='mu')
     with pytest.raises(ValueError):

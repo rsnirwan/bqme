@@ -105,3 +105,28 @@ class Gamma(Distribution):
 
     def domain(self) -> Tuple[float, float]:
         return (0, float('inf'))
+
+
+class Lognormal(Distribution):
+    """
+    Container for Lognormal Distribution
+
+    Examples
+    ________
+    >>> Lognormal(1., 1., name='sigma')
+    Lognormal(mu=1.0, sigma=1.0, name="sigma")
+    >>> Lognormal(1.1, 1.0, name='sigma').code()
+    {'parameter': 'real<lower=0> sigma;', 'prior': 'sigma ~ lognormal(1.1, 1.0);'}
+    """
+    def __init__(self,
+            mu: float,
+            sigma: float,
+            name: str):
+        self.mu = ContinuousVariable(mu, name='mu')
+        self.sigma = PositiveContinuousVariable(sigma, name='sigma')
+        self.name = name
+        parameters_dict = {'mu':self.mu, 'sigma':self.sigma}
+        super().__init__(parameters_dict, self.name)
+
+    def domain(self) -> Tuple[float, float]:
+        return (0, float('inf'))
