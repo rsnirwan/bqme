@@ -1,7 +1,7 @@
 import pytest
 
-from bqme.distributions import Normal, Gamma, Lognormal
-from bqme.models import QM, NormalQM, GammaQM, LognormalQM
+from bqme.distributions import Normal, Gamma, Lognormal, Weibull
+from bqme.models import QM, NormalQM, GammaQM, LognormalQM, WeibullQM
 from bqme.settings import BASE_DIR
 
 FILLED_TEMPLATES_PATH = BASE_DIR / 'tests' / 'filled_templates'
@@ -153,3 +153,44 @@ def test_lognormal_optimizing(lognormal_compiled_model):
     opt = lognormal_compiled_model.optimizing(N, q, X)
     assert opt['mu'].mean() > -1.
 
+### WeibullQM tests
+
+def test_weibull_code():
+    alpha = Gamma(1.0, 1.2, name='alpha')
+    sigma = Weibull(2.1, 2.2, name='sigma')
+    model = WeibullQM(alpha, sigma)
+    code = model.code
+    with open(FILLED_TEMPLATES_PATH / 'os_weibull.stan') as f:
+        code_hard_coded = f.read()
+    assert code == code_hard_coded
+
+def test_weibull_check_domain_expected_fail():
+    alpha = Weibull(1.0, 1.2, name='alpha')
+    sigma = Weibull(2.1, 2.2, name='sigma')
+    model = WeibullQM(alpha, sigma)
+    N, q, X = 1000, [0.25, 0.5, 0.75], [-0.1, 1.0, 1.4] #-0.1 is invalid
+    with pytest.raises(ValueError):
+        model.sampling(N, q, X)
+    with pytest.raises(ValueError):
+        model.optimizing(N, q, X)
+
+@pytest.fixture(scope='module')
+def weibull_compiled_model():
+    alpha = Weibull(1., 1., name='alpha')
+    sigma = Weibull(1., 1., name='sigma')
+    model = WeibullQM(alpha, sigma)
+    model.compile()
+    return  model
+
+@pytest.mark.slow
+def test_weibull_sampling(weibull_compiled_model):
+    N, q, X = 1000, [0.25, 0.5, 0.75], [0.1, 1.0, 1.4]
+    samples = weibull_compiled_model.sampling(N, q, X)
+    dic = samples.extract(['alpha', 'sigma'])
+    assert dic['alpha'].mean() > 0.
+
+@pytest.mark.slow
+def test_weibull_optimizing(weibull_compiled_model):
+    N, q, X = 1000, [0.25, 0.5, 0.75], [0.1, 1.0, 1.4]
+    opt = weibull_compiled_model.optimizing(N, q, X)
+    assert opt['alpha'].mean() > 0.

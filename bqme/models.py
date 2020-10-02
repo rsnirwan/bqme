@@ -183,3 +183,31 @@ class LognormalQM(QM):
     def domain(self) -> Tuple[float, float]:
         return (0, float('inf'))
 
+
+class WeibullQM(QM):
+    """
+    Quantile matching using Weibull distribution
+
+    Parameters
+    ----------
+    alpha : Distribution
+        Also called the shape of the Weibull
+    sigma : Distribution
+        Also called the rate of the Weibull
+
+    Examples
+    --------
+    >>> from bqme.distributions import Weibull
+    >>> model = WeibullQM(Weibull(1., 1. ,'alpha'), Weibull(1., 1., 'sigma'))
+    >>> model
+    WeibullQM(Weibull(alpha=1.0, sigma=1.0, name="alpha"), Weibull(alpha=1.0, sigma=1.0, name="sigma"))
+    >>> code = model.code
+    """
+    def __init__(self, alpha:Distribution, sigma:Distribution):
+        self.alpha = alpha
+        self.sigma = sigma
+        parameters_dict = {'alpha': self.alpha, 'sigma': self.sigma}
+        super().__init__(parameters_dict)
+
+    def domain(self) -> Tuple[float, float]:
+        return (0, float('inf'))
