@@ -61,6 +61,12 @@ class Normal(Distribution):
     """
     Container for Normal Distribution
 
+    Parameters
+    ----------
+    mu : float
+    sigma : float
+    name : str
+
     Examples
     ________
     >>> Normal(0, 1, name='mu')
@@ -85,6 +91,12 @@ class Normal(Distribution):
 class Gamma(Distribution):
     """
     Container for Gamma Distribution
+
+    Parameters
+    ----------
+    alpha : float
+    beta : float
+    name : str
 
     Examples
     ________
@@ -111,6 +123,12 @@ class Lognormal(Distribution):
     """
     Container for Lognormal Distribution
 
+    Parameters
+    ----------
+    mu : float
+    sigma : float
+    name : str
+
     Examples
     ________
     >>> Lognormal(1., 1., name='sigma')
@@ -135,6 +153,12 @@ class Lognormal(Distribution):
 class Weibull(Distribution):
     """
     Container for Weibull Distribution
+
+    Parameters
+    ----------
+    alpha : float
+    sigma : float
+    name : str
 
     Examples
     ________
