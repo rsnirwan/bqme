@@ -130,3 +130,28 @@ class Lognormal(Distribution):
 
     def domain(self) -> Tuple[float, float]:
         return (0, float('inf'))
+
+
+class Weibull(Distribution):
+    """
+    Container for Weibull Distribution
+
+    Examples
+    ________
+    >>> Weibull(1., 1., name='sigma')
+    Weibull(alpha=1.0, sigma=1.0, name="sigma")
+    >>> Weibull(1.1, 1.0, name='sigma').code()
+    {'parameter': 'real<lower=0> sigma;', 'prior': 'sigma ~ weibull(1.1, 1.0);'}
+    """
+    def __init__(self, 
+            alpha: float,
+            sigma: float,
+            name: str):
+        self.alpha = PositiveContinuousVariable(alpha, name='alpha')
+        self.sigma = PositiveContinuousVariable(sigma, name='sigma')
+        self.name = name
+        parameters_dict = {'alpha':self.alpha, 'sigma':self.sigma}
+        super().__init__(parameters_dict, self.name)
+
+    def domain(self) -> Tuple[float, float]:
+        return (0, float('inf'))

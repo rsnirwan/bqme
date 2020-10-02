@@ -1,5 +1,5 @@
 import pytest
-from bqme.distributions import Normal, Gamma, Lognormal
+from bqme.distributions import Normal, Gamma, Lognormal, Weibull
 
 def test_normal_print():
     mu = Normal(0, 1, name='mu')
@@ -42,6 +42,20 @@ def test_lognormal_code():
     exp_out = {
             'parameter': 'real<lower=0> sigma;',
             'prior': 'sigma ~ lognormal(1, 1.0);'
+        }
+    assert code == exp_out
+
+def test_weibull_print():
+    alpha = Weibull(1., 1., name='alpha')
+    sigma = Weibull(1., 1.2, name='s')
+    assert str(alpha) == 'Weibull(alpha=1.0, sigma=1.0, name="alpha")'
+    assert str(sigma) == 'Weibull(alpha=1.0, sigma=1.2, name="s")'
+
+def test_weibull_code():
+    code = Weibull(1., 1., name='sigma').code()
+    exp_out = {
+            'parameter': 'real<lower=0> sigma;', 
+            'prior': 'sigma ~ weibull(1.0, 1.0);'
         }
     assert code == exp_out
 
