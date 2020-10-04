@@ -25,6 +25,9 @@ setuptools.setup(
     extras_require={
         "dev":[
             "pytest>=6.0",
+            "sphinx==3.2.1",
+            "sphinx_rtd_theme==0.5.0",
+            "recommonmark==0.6.0",
         ],
     },
     package_data={
