@@ -2,7 +2,7 @@ import pytest
 
 from bqme.distributions import Normal, Gamma, Lognormal, Weibull
 from bqme.models import QM, NormalQM, GammaQM, LognormalQM, WeibullQM
-from bqme.settings import BASE_DIR
+from bqme._settings import BASE_DIR
 
 FILLED_TEMPLATES_PATH = BASE_DIR / 'tests' / 'filled_templates'
 

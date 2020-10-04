@@ -4,7 +4,7 @@ from typing import Dict, Tuple
 from pystan import StanModel
 
 from bqme.distributions import Distribution
-from bqme.settings import STAN_TEMPLATE_PATH
+from bqme._settings import STAN_TEMPLATE_PATH
 
 
 multiprocessing.set_start_method("fork") #mac has diffrerent default
@@ -15,7 +15,7 @@ class QM:
     Base class for quantile matching (QM) models
 
     Parameters
-    _________
+    __________
     parameters_dict : Dict
         Keys are internal names for the priors of the model
         e.g. 'mu', 'sigma' for a GaussianQM. Values are the user 
