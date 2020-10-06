@@ -3,8 +3,9 @@ from typing import Dict, Tuple
 
 from pystan import StanModel
 
-from bqme.distributions import Distribution
 from bqme._settings import STAN_TEMPLATE_PATH
+from bqme.distributions import Distribution
+from bqme.fit_object import FitObjectSampling, FitObjectOptimizing
 
 
 multiprocessing.set_start_method("fork") #mac has diffrerent default
@@ -33,7 +34,7 @@ class QM:
     def __repr__(self):
         return self.__str__()
 
-    def _check_dict(self, parameters_dict):
+    def _check_dict(self, parameters_dict:Dict[str, Distribution]):
         for key, value in parameters_dict.items():
             if not isinstance(value, Distribution):
                 raise ValueError(f'Input parameter "{key}" of "{self.__class__.__name__}" needs to be a Distribution (see bqme.distributions), but is of type {type(value)}.')
@@ -88,13 +89,15 @@ class QM:
         self._check_domain(X)
         if self.model is None: self.compile()
         data_dict = {'N':N, 'M':len(q), 'q':q, 'X':X}
-        return self.model.sampling(data=data_dict)
+        samples = self.model.sampling(data=data_dict)
+        return FitObjectSampling(self.model, samples)
 
     def optimizing(self, N:int, q:Tuple[float,...], X:Tuple[float,...]) -> 'StanFit4Model':
         self._check_domain(X)
         if self.model is None: self.compile()
         data_dict = {'N':N, 'M':len(q), 'q':q, 'X':X}
-        return self.model.optimizing(data=data_dict)
+        opt = self.model.optimizing(data=data_dict)
+        return FitObjectOptimizing(self.model, opt)
 
 
 class NormalQM(QM):

@@ -47,18 +47,10 @@ def test_normal_code():
         code_hard_coded = f.read()
     assert code == code_hard_coded
 
-@pytest.fixture(scope='module')
-def normal_compiled_model():
-    mu = Normal(0., 1., name='mu')
-    sigma = Gamma(1., 1.2, name='sigma')
-    model = NormalQM(mu, sigma)
-    model.compile()
-    return  model
-
 @pytest.mark.slow
 def test_normal_sampling(normal_compiled_model):
     N, q, X = 1000, [0.25, 0.5, 0.75], [-0.1, 0.0, 0.1]
-    samples = normal_compiled_model.sampling(N, q, X)
+    samples = normal_compiled_model.sampling(N, q, X).stan_obj
     dic = samples.extract(['mu', 'sigma'])
     assert -0.01 < dic['mu'].mean() < 0.01
 
@@ -66,7 +58,7 @@ def test_normal_sampling(normal_compiled_model):
 def test_normal_optimizing(normal_compiled_model):
     N, q, X = 1000, [0.25, 0.5, 0.75], [-0.1, 0.0, 0.1]
     opt = normal_compiled_model.optimizing(N, q, X)
-    assert -0.01 < opt['mu'].mean() < 0.01
+    assert -0.01 < opt.mu < 0.01
 
 
 ### GammaQM tests
@@ -90,18 +82,10 @@ def test_gamma_check_domain_expected_fail():
     with pytest.raises(ValueError):
         model.optimizing(N, q, X)
 
-@pytest.fixture(scope='module')
-def gamma_compiled_model():
-    alpha = Gamma(1., 1., name='alpha')
-    beta = Gamma(1., 1., name='beta')
-    model = GammaQM(alpha, beta)
-    model.compile()
-    return  model
-
 @pytest.mark.slow
 def test_gamma_sampling(gamma_compiled_model):
     N, q, X = 1000, [0.25, 0.5, 0.75], [0.1, 1.0, 1.4]
-    samples = gamma_compiled_model.sampling(N, q, X)
+    samples = gamma_compiled_model.sampling(N, q, X).stan_obj
     dic = samples.extract(['alpha', 'beta'])
     assert dic['alpha'].mean() > 0.
 
@@ -109,7 +93,7 @@ def test_gamma_sampling(gamma_compiled_model):
 def test_gamma_optimizing(gamma_compiled_model):
     N, q, X = 1000, [0.25, 0.5, 0.75], [0.1, 1.0, 1.4]
     opt = gamma_compiled_model.optimizing(N, q, X)
-    assert opt['alpha'].mean() > 0.
+    assert opt.alpha > 0.
 
 ### LognormalQM tests
 
@@ -132,18 +116,10 @@ def test_lognormal_check_domain_expected_fail():
     with pytest.raises(ValueError):
         model.optimizing(N, q, X)
 
-@pytest.fixture(scope='module')
-def lognormal_compiled_model():
-    mu = Normal(1., 1., name='mu')
-    sigma = Lognormal(1., 1., name='sigma')
-    model = LognormalQM(mu, sigma)
-    model.compile()
-    return  model
-
 @pytest.mark.slow
 def test_lognormal_sampling(lognormal_compiled_model):
     N, q, X = 1000, [0.25, 0.5, 0.75], [0.1, 1.0, 1.4]
-    samples = lognormal_compiled_model.sampling(N, q, X)
+    samples = lognormal_compiled_model.sampling(N, q, X).stan_obj
     dic = samples.extract(['mu', 'sigma'])
     assert dic['mu'].mean() > -1.
 
@@ -151,7 +127,7 @@ def test_lognormal_sampling(lognormal_compiled_model):
 def test_lognormal_optimizing(lognormal_compiled_model):
     N, q, X = 1000, [0.25, 0.5, 0.75], [0.1, 1.0, 1.4]
     opt = lognormal_compiled_model.optimizing(N, q, X)
-    assert opt['mu'].mean() > -1.
+    assert opt.mu > -1.
 
 ### WeibullQM tests
 
@@ -174,18 +150,10 @@ def test_weibull_check_domain_expected_fail():
     with pytest.raises(ValueError):
         model.optimizing(N, q, X)
 
-@pytest.fixture(scope='module')
-def weibull_compiled_model():
-    alpha = Weibull(1., 1., name='alpha')
-    sigma = Weibull(1., 1., name='sigma')
-    model = WeibullQM(alpha, sigma)
-    model.compile()
-    return  model
-
 @pytest.mark.slow
 def test_weibull_sampling(weibull_compiled_model):
     N, q, X = 1000, [0.25, 0.5, 0.75], [0.1, 1.0, 1.4]
-    samples = weibull_compiled_model.sampling(N, q, X)
+    samples = weibull_compiled_model.sampling(N, q, X).stan_obj
     dic = samples.extract(['alpha', 'sigma'])
     assert dic['alpha'].mean() > 0.
 
@@ -193,4 +161,4 @@ def test_weibull_sampling(weibull_compiled_model):
 def test_weibull_optimizing(weibull_compiled_model):
     N, q, X = 1000, [0.25, 0.5, 0.75], [0.1, 1.0, 1.4]
     opt = weibull_compiled_model.optimizing(N, q, X)
-    assert opt['alpha'].mean() > 0.
+    assert opt.alpha > 0.
