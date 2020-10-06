@@ -12,6 +12,14 @@ bqme.distributions module
    :undoc-members:
    :show-inheritance:
 
+bqme.fit\_object module
+-----------------------
+
+.. automodule:: bqme.fit_object
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 bqme.models module
 ------------------
 

@@ -51,16 +51,22 @@ sigma = Gamma(1, 1, name='sigma')
 model = NormalQM(mu, sigma)
 
 # sample the posterior
-samples = model.sampling(N, q, X)  # returns a stan fit object
+fit = model.sampling(N, q, X)  # returns a stan fit object
 
-# extract samples
-mu_samples = samples.extract('mu')['mu']
-sigma_samples = samples.extract('sigma')['sigma']
+# extract posterior samples
+mu_posterior = fit.mu
+sigma_posterior = fit.sigma
+
+# get stan sample object
+stan_samples = fit.stan_obj
 ```
 
 We can also look at the generated stan code and optimize the parameters (MAP) instead of sampling the posterior.
 
 ```python
+from bqme.distributions import Normal, Gamma
+from bqme.models import NormalQM
+
 mu = Normal(0, 1, name='mu')
 sigma = Gamma(1, 1, name='sigma')
 model = NormalQM(mu, sigma)
@@ -70,11 +76,11 @@ print(model.code)
 
 # optimize
 N, q, X = 100, [0.25, 0.5, 0.75], [-0.1, 0.3, 0.8]
-opt = model.optimizing(N, q, X)
+fit = model.optimizing(N, q, X)
 
 # extract optimized parameters
-mu_opt = opt['mu']
-sigma_opt = opt['sigma']
+mu_opt = fit.mu
+sigma_opt = fit.sigma
 ```
 
 ## Available prior distributions and likelihoods
@@ -83,8 +89,8 @@ distributions/priors (import from `bqme.distributions`):
 
 * [x] `Normal(mu:float, sigma:float, name:str)`
 * [x] `Gamma(alpha:float, beta:float, name:str)`
-* [x] `Lognormal(mu:float, sigma:float, name:str)` (on develop branch)
-* [x] `Weibull(alpha:float, sigma:float, name:str)` (on develop branch)
+* [x] `Lognormal(mu:float, sigma:float, name:str)`
+* [x] `Weibull(alpha:float, sigma:float, name:str)`
 * [ ] `InvGamma`
 * [ ] `...`
 
@@ -92,9 +98,9 @@ distributions/priors (import from `bqme.distributions`):
 models/likelihoods (import from `bqme.models`):
 
 * [x] `NormalQM(mu:distribution, sigma:distribution)`
-* [x] `GammaQM(alpha:distribution, beta:distribution)` (on develop branch)
-* [x] `LognormalQM(mu:distribution, sigma:distribution)` (on develop branch)
-* [x] `WeibullQM(alpha:distribution, sigma:distribution)` (on develop branch)
+* [x] `GammaQM(alpha:distribution, beta:distribution)`
+* [x] `LognormalQM(mu:distribution, sigma:distribution)`
+* [x] `WeibullQM(alpha:distribution, sigma:distribution)`
 * [ ] `InvGammaQM`
 * [ ] `...`
 
@@ -104,8 +110,7 @@ Inputs to the models need to be distributions.
 
 - [x] make package available on PyPI
 - [x] tag/release on github
-- [ ] add code coverage
-- [ ] testing with nox
-- [ ] use sphinx as documentation tool
+- [x] github actions for testing on different os and versions
+- [x] use sphinx as documentation tool
 - [ ] add Mixture-model
 - [ ] implement fit.ppf(q), fit.cdf(x), fit.pdf(x), ...
