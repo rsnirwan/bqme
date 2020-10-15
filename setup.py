@@ -21,6 +21,8 @@ setuptools.setup(
     python_requires='>=3.6',
     install_requires=[
         'pystan>=2.19',
+        'numpy>=1.19.2',
+        'scipy>=1.5.2',
     ],
     extras_require={
         "dev":[

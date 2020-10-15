@@ -1,5 +1,11 @@
 import pytest
+import numpy as np
+from scipy.stats import norm
 from bqme.distributions import Normal, Gamma, Lognormal, Weibull
+
+distributions = [
+    (Normal(1., 2., 'normal'), norm(loc=1., scale=2.)),
+]
 
 def test_normal_print():
     mu = Normal(0, 1, name='mu')
@@ -66,3 +72,16 @@ def test_wrong_initialization():
         Normal(0, 0, name='mu')
     with pytest.raises(ValueError):
         Gamma(-1., 2, name='alpha')
+
+
+### pdf
+@pytest.mark.parametrize("bqme_dist, scipy_dist", distributions)
+def test_distribution_scipy(bqme_dist, scipy_dist):
+    """ test pdf, cdf, logpdf, logcdf, ppf """
+    x = np.linspace(1., 3., 10)
+    q = np.linspace(0.1, 0.9, 10)
+    assert all( bqme_dist.pdf(x) == scipy_dist.pdf(x) )
+    assert all( bqme_dist.cdf(x) == scipy_dist.cdf(x) )
+    assert all( bqme_dist.logpdf(x) == scipy_dist.logpdf(x) )
+    assert all( bqme_dist.logcdf(x) == scipy_dist.logcdf(x) )
+    assert all( bqme_dist.ppf(q) == scipy_dist.ppf(q) )

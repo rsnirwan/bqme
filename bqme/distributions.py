@@ -1,4 +1,7 @@
-from typing import Dict, Tuple
+from typing import Dict, Tuple, List
+
+import numpy as np
+from scipy.stats import norm
 
 from bqme.variables import ContinuousVariable, PositiveContinuousVariable
 from bqme.variables import Variable
@@ -56,6 +59,27 @@ class Distribution:
         return self._stan_code()
 
 
+    def pdf(self, x:List[float]) -> np.ndarray:
+        return self._distribution.pdf(x)
+
+
+    def cdf(self, x:List[float]) -> np.ndarray:
+        return self._distribution.cdf(x)
+
+
+    def logpdf(self, x:List[float]) -> np.ndarray:
+        return self._distribution.logpdf(x)
+
+    
+    def logcdf(self, x:List[float]) -> np.ndarray:
+        return self._distribution.logcdf(x)
+
+
+    def ppf(self, q:List[float]) -> np.ndarray:
+        return self._distribution.ppf(q)
+        
+
+
 
 class Normal(Distribution):
     """
@@ -64,7 +88,9 @@ class Normal(Distribution):
     Parameters
     ----------
     mu : float
+        location of the normal
     sigma : float
+        standard deviation of the normal
     name : str
 
     Examples
@@ -81,11 +107,13 @@ class Normal(Distribution):
         self.mu = ContinuousVariable(mu, name='mu')
         self.sigma = PositiveContinuousVariable(sigma, name='sigma')
         self.name = name
+        self._distribution = norm(loc=self.mu.value, scale=self.sigma.value)
         parameters_dict = {'mu': self.mu, 'sigma': self.sigma}
         super().__init__(parameters_dict, self.name)
 
     def domain(self) -> Tuple[float, float]:
         return (float('-inf'), float('inf'))
+
 
 
 class Gamma(Distribution):
