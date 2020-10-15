@@ -167,7 +167,7 @@ class LognormalQM(QM):
     mu : Distribution
         location of the corresponding Normal distribution
     sigma : Distribution
-        sclae of the corresponding Normal distribution
+        scale of the corresponding Normal distribution
 
     Examples
     --------
@@ -196,7 +196,7 @@ class WeibullQM(QM):
     alpha : Distribution
         Also called the shape of the Weibull
     sigma : Distribution
-        Also called the rate of the Weibull
+        Also called the scale of the Weibull
 
     Examples
     --------

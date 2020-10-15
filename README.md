@@ -51,7 +51,7 @@ sigma = Gamma(1, 1, name='sigma')
 model = NormalQM(mu, sigma)
 
 # sample the posterior
-fit = model.sampling(N, q, X)  # returns a stan fit object
+fit = model.sampling(N, q, X)
 
 # extract posterior samples
 mu_posterior = fit.mu
