@@ -1,4 +1,6 @@
-from typing import Dict
+from typing import Dict, List
+
+import numpy as np
 
 class FitObject:
     """
@@ -25,8 +27,90 @@ class FitObjectSampling(FitObject):
         self.stan_obj = stan_fit_object
         self._catch_error_access_parameter = ValueError
 
-    def _access_parameter(self, attr:str) -> 'numpy.ndarray':
+    def _access_parameter(self, attr:str) -> np.ndarray:
         return self.stan_obj.extract(attr)[attr]
+
+    def _get_samples(self) -> np.ndarray:
+        names = self.model.parameters_dict.keys()
+        # return shape (#samples, #parameters)
+        return np.array([self._access_parameter(name) for name in names]).T
+
+    def _apply(self,
+            f:'function',
+            x:float or List[float],
+            method: str
+        ) -> np.ndarray:
+        """applys pdf, cdf, ... for each sample to x"""
+        posterior_samples = self._get_samples()
+        dist = self.model._distribution
+        l = 1 if (type(x)==float or type(x)==int) else len(x)
+        ret = np.zeros((posterior_samples.shape[0], l))
+        for i, sample in enumerate(posterior_samples):
+            ret[i] = f(dist, sample, x)
+        if method == 'mean':
+            ret = np.mean(ret, axis=0)
+        elif method == 'median':
+            ret = np.median(ret, axis=0)
+        #else return full matrix
+        return ret.squeeze()
+
+    def pdf(self, x:float or List[float], method='mean'):
+        """
+        Calculates the pdf of x using posterior samples
+
+        Parameters
+        ----------
+        x : float or List[float]
+            points where the pdf should be evaluated
+        method: str, default: 'mean'
+            possible values ('mean', 'median', 'full')
+            return values is the mean over all samples if 'mean' is selected. Otherwise median or the full matrix is returned
+
+        Returns
+        -------
+        ret : ndarray
+        """
+        f = lambda dist, param, x: dist(*param, name='a').pdf(x)
+        return self._apply(f, x, method)
+
+    def cdf(self, x:float or List[float], method='mean'):
+        """
+        Calculates the cdf of x using posterior samples
+
+        Parameters
+        ----------
+        x : float or List[float]
+            points where the cdf should be evaluated
+        method: str, default: 'mean'
+            possible values ('mean', 'median', 'full')
+            return values is the mean over all samples if 'mean' is selected. Otherwise median or the full matrix is returned
+
+        Returns
+        -------
+        ret : ndarray
+        """
+        f = lambda dist, param, x: dist(*param, name='a').cdf(x)
+        return self._apply(f, x, method)
+
+    def ppf(self, q:float or List[float], method='full'):
+        """
+        Calculates the percent point funtion (ppf) of x using posterior samples
+
+        Parameters
+        ----------
+        q : float or List[float]
+            points where the ppf should be evaluated. Must be in range (0, 1)
+        method: str, default: 'mean'
+            possible values ('mean', 'median', 'full')
+            return values is the mean over all samples if 'mean' is selected. Otherwise median or the full matrix is returned
+
+        Returns
+        -------
+        ret : ndarray
+        """
+        f = lambda dist, param, q: dist(*param, name='a').ppf(q)
+        return self._apply(f, q, method)
+
 
 
 class FitObjectOptimizing(FitObject):

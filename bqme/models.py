@@ -4,7 +4,7 @@ from typing import Dict, Tuple
 from pystan import StanModel
 
 from bqme._settings import STAN_TEMPLATE_PATH
-from bqme.distributions import Distribution
+from bqme.distributions import Distribution, Normal
 from bqme.fit_object import FitObjectSampling, FitObjectOptimizing
 
 
@@ -90,7 +90,7 @@ class QM:
         if self.model is None: self.compile()
         data_dict = {'N':N, 'M':len(q), 'q':q, 'X':X}
         samples = self.model.sampling(data=data_dict)
-        return FitObjectSampling(self.model, samples)
+        return FitObjectSampling(self, samples)
 
     def optimizing(self, N:int, q:Tuple[float,...], X:Tuple[float,...]) -> 'StanFit4Model':
         self._check_domain(X)
@@ -122,6 +122,7 @@ class NormalQM(QM):
     def __init__(self, mu:Distribution, sigma:Distribution):
         self.mu = mu
         self.sigma = sigma
+        self._distribution = Normal #to access corresponding distribution in fit
         parameters_dict = {'mu': self.mu, 'sigma': self.sigma}
         super().__init__(parameters_dict)
 
