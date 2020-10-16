@@ -97,7 +97,7 @@ class QM:
         if self.model is None: self.compile()
         data_dict = {'N':N, 'M':len(q), 'q':q, 'X':X}
         opt = self.model.optimizing(data=data_dict)
-        return FitObjectOptimizing(self.model, opt)
+        return FitObjectOptimizing(self, opt)
 
 
 class NormalQM(QM):
