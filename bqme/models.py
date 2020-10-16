@@ -4,7 +4,7 @@ from typing import Dict, Tuple
 from pystan import StanModel
 
 from bqme._settings import STAN_TEMPLATE_PATH
-from bqme.distributions import Distribution, Normal
+from bqme.distributions import Distribution, Normal, Gamma, Lognormal
 from bqme.fit_object import FitObjectSampling, FitObjectOptimizing
 
 
@@ -152,6 +152,7 @@ class GammaQM(QM):
     def __init__(self, alpha:Distribution, beta:Distribution):
         self.alpha = alpha
         self.beta = beta
+        self._distribution = Gamma #to access corresponding distribution in fit
         parameters_dict = {'alpha': self.alpha, 'beta': self.beta}
         super().__init__(parameters_dict)
 
@@ -181,6 +182,7 @@ class LognormalQM(QM):
     def __init__(self, mu:Distribution, sigma:Distribution):
         self.mu = mu
         self.sigma = sigma
+        self._distribution = Lognormal #to access corresponding distribution in fit
         parameters_dict = {'mu': self.mu, 'sigma': self.sigma}
         super().__init__(parameters_dict)
 

@@ -32,6 +32,7 @@ class FitObject:
         method: str, default: 'mean'
             if sampling is used possible values are ('mean', 'median', 'full'). Return values is the mean over all samples if 'mean' is selected. Otherwise median or the full matrix is returned
             if optimizing is used return values are the pdf evaluation of the model at x.
+
         Returns
         -------
         ret : ndarray

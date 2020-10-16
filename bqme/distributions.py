@@ -1,7 +1,7 @@
 from typing import Dict, Tuple, List
 
 import numpy as np
-from scipy.stats import norm
+from scipy.stats import norm, gamma, lognorm
 
 from bqme.variables import ContinuousVariable, PositiveContinuousVariable
 from bqme.variables import Variable
@@ -123,7 +123,9 @@ class Gamma(Distribution):
     Parameters
     ----------
     alpha : float
+        shape of the Gamma
     beta : float
+        rate of the Gamma
     name : str
 
     Examples
@@ -140,6 +142,7 @@ class Gamma(Distribution):
         self.alpha = PositiveContinuousVariable(alpha, name='alpha')
         self.beta = PositiveContinuousVariable(beta, name='beta')
         self.name = name
+        self._distribution = gamma(a=self.alpha.value, scale=1./self.beta.value)
         parameters_dict = {'alpha':self.alpha, 'beta':self.beta}
         super().__init__(parameters_dict, self.name)
 
@@ -154,7 +157,9 @@ class Lognormal(Distribution):
     Parameters
     ----------
     mu : float
+        log(rv) has loc mu
     sigma : float
+        log(rv) has scale sigma
     name : str
 
     Examples
@@ -171,6 +176,8 @@ class Lognormal(Distribution):
         self.mu = ContinuousVariable(mu, name='mu')
         self.sigma = PositiveContinuousVariable(sigma, name='sigma')
         self.name = name
+        # for lognorm parameterization see scipy documentation
+        self._distribution = lognorm(s=self.sigma.value, scale=np.exp(self.mu.value))
         parameters_dict = {'mu':self.mu, 'sigma':self.sigma}
         super().__init__(parameters_dict, self.name)
 
