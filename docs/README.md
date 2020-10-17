@@ -1,5 +1,6 @@
 # Bayesian Quantile Matching Estimation using Order Statistics
 
+[![Documentation Status](https://readthedocs.org/projects/bqme/badge/?version=develop)](https://bqme.readthedocs.io/en/develop/?badge=develop)
 
 BQME is a package that allows users to fit a distribution to observed quantile data. The package uses Order Statistics as the noise model, which is more robust than e.g. Gaussian noise model (mean squared error). The paper describing the theory can be found on arxiv: [https://arxiv.org/abs/2008.06423](https://arxiv.org/abs/2008.06423). The notebooks for the experiments in the paper are moved to [https://github.com/RSNirwan/BQME_experiments](https://github.com/RSNirwan/BQME_experiments).
 
@@ -51,7 +52,7 @@ sigma = Gamma(1, 1, name='sigma')
 model = NormalQM(mu, sigma)
 
 # sample the posterior
-fit = model.sampling(N, q, X)  # returns a stan fit object
+fit = model.sampling(N, q, X)
 
 # extract posterior samples
 mu_posterior = fit.mu
@@ -59,6 +60,16 @@ sigma_posterior = fit.sigma
 
 # get stan sample object
 stan_samples = fit.stan_obj
+
+# get pdf and cdf of x_new (only on develop branch)
+x_new = 1.0
+pdf_x = fit.pdf(x_new)
+cdf_x = fit.cdf(x_new)
+
+# get percent point function of q_new (inverse of cdf) (only on develop branch)
+# default return values are samples from posterior predictive p(x|q)
+q_new = 0.2
+ppf_q = fit.ppf(q_new)  
 ```
 
 We can also look at the generated stan code and optimize the parameters (MAP) instead of sampling the posterior.
@@ -81,6 +92,12 @@ fit = model.optimizing(N, q, X)
 # extract optimized parameters
 mu_opt = fit.mu
 sigma_opt = fit.sigma
+
+# get pdf, cdf, ppf (only on develop branch)
+pdf_x = fit.pdf(1.1)
+cdf_x = fit.cdf(1.1)
+ppf_q = fit.ppf(0.2)
+
 ```
 
 ## Available prior distributions and likelihoods

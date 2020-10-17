@@ -1,5 +1,6 @@
 # Bayesian Quantile Matching Estimation using Order Statistics
 
+[![Documentation Status](https://readthedocs.org/projects/bqme/badge/?version=develop)](https://bqme.readthedocs.io/en/develop/?badge=develop)
 
 BQME is a package that allows users to fit a distribution to observed quantile data. The package uses Order Statistics as the noise model, which is more robust than e.g. Gaussian noise model (mean squared error). The paper describing the theory can be found on arxiv: [https://arxiv.org/abs/2008.06423](https://arxiv.org/abs/2008.06423). The notebooks for the experiments in the paper are moved to [https://github.com/RSNirwan/BQME_experiments](https://github.com/RSNirwan/BQME_experiments).
 
