@@ -1,7 +1,7 @@
 import pytest
 import numpy as np
 import pystan
-from scipy.stats import norm, gamma, lognorm
+from scipy.stats import norm, gamma, lognorm, weibull_min
 
 from bqme.distributions import Normal, Gamma, Lognormal, Weibull
 
@@ -9,6 +9,7 @@ distributions = [
     (Normal(mu=1., sigma=2., name='n'), norm(loc=1., scale=2.)),
     (Gamma(alpha=1., beta=2., name='g'), gamma(a=1., scale=1./2.)),
     (Lognormal(mu=1., sigma=2., name='l'), lognorm(s=2., scale=np.exp(1.))),
+    (Weibull(alpha=1., sigma=2., name='w'), weibull_min(c=1., scale=2.)),
 ]
 
 ### test parameter equivalence of scipy and stan
@@ -104,7 +105,17 @@ def test_weibull_code():
         }
     assert code == exp_out
 
-### EXPEXTED FAILS
+@pytest.mark.slow
+def test_weibull_parameters():
+    model_stan = pystan.StanModel(model_code=code('weibull'))
+    samples = model_stan.sampling()
+    s = samples.extract('x')['x']
+    s_lp = samples.extract('lprob')['lprob']
+    model_scipy = weibull_min(c=2., scale=0.8)
+    s_lp2 = model_scipy.logpdf(s)
+    assert np.allclose(s_lp, s_lp2)
+
+### EXPECTED FAILS
 
 def test_wrong_initialization():
     with pytest.raises(ValueError):

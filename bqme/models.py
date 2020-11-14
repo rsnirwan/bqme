@@ -4,7 +4,7 @@ from typing import Dict, Tuple
 from pystan import StanModel
 
 from bqme._settings import STAN_TEMPLATE_PATH
-from bqme.distributions import Distribution, Normal, Gamma, Lognormal
+from bqme.distributions import Distribution, Normal, Gamma, Lognormal, Weibull
 from bqme.fit_object import FitObjectSampling, FitObjectOptimizing
 
 
@@ -212,6 +212,7 @@ class WeibullQM(QM):
     def __init__(self, alpha:Distribution, sigma:Distribution):
         self.alpha = alpha
         self.sigma = sigma
+        self._distribution = Weibull #to access corresponding distribution in fit
         parameters_dict = {'alpha': self.alpha, 'sigma': self.sigma}
         super().__init__(parameters_dict)
 

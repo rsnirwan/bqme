@@ -1,7 +1,7 @@
 from typing import Dict, Tuple, List
 
 import numpy as np
-from scipy.stats import norm, gamma, lognorm
+from scipy.stats import norm, gamma, lognorm, weibull_min
 
 from bqme.variables import ContinuousVariable, PositiveContinuousVariable
 from bqme.variables import Variable
@@ -192,7 +192,9 @@ class Weibull(Distribution):
     Parameters
     ----------
     alpha : float
+        shape of the weibull
     sigma : float
+        scale of the weibull - equivalent to 1/rate
     name : str
 
     Examples
@@ -209,6 +211,7 @@ class Weibull(Distribution):
         self.alpha = PositiveContinuousVariable(alpha, name='alpha')
         self.sigma = PositiveContinuousVariable(sigma, name='sigma')
         self.name = name
+        self._distribution = weibull_min(c=self.alpha.value, scale=self.sigma.value)
         parameters_dict = {'alpha':self.alpha, 'sigma':self.sigma}
         super().__init__(parameters_dict, self.name)
 

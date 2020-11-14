@@ -132,5 +132,5 @@ Inputs to the models need to be distributions.
 - [x] tag/release on github
 - [x] github actions for testing on different os and versions
 - [x] use sphinx as documentation tool
+- [x] implement fit.ppf(q), fit.cdf(x), fit.pdf(x), ...
 - [ ] add Mixture-model
-- [ ] implement fit.ppf(q), fit.cdf(x), fit.pdf(x), ...
