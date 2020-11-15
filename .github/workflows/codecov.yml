@@ -8,13 +8,13 @@ jobs:
         os: [ubuntu-latest, macos-latest]
     env:
       OS: ${{ matrix.os }}
-      PYTHON: '3.6'
+      PYTHON: '3.7'
     steps:
     - uses: actions/checkout@v2
     - name: Setup Python
       uses: actions/setup-python@v2
       with:
-        python-version: 3.6
+        python-version: 3.7
     - name: Generate coverage report
       run: |
         python -m pip install --upgrade pip
