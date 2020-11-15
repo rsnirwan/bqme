@@ -4,7 +4,7 @@ from typing import Dict, Tuple
 from pystan import StanModel
 
 from bqme._settings import STAN_TEMPLATE_PATH
-from bqme.distributions import Distribution
+from bqme.distributions import Distribution, Normal, Gamma, Lognormal, Weibull
 from bqme.fit_object import FitObjectSampling, FitObjectOptimizing
 
 
@@ -90,14 +90,14 @@ class QM:
         if self.model is None: self.compile()
         data_dict = {'N':N, 'M':len(q), 'q':q, 'X':X}
         samples = self.model.sampling(data=data_dict)
-        return FitObjectSampling(self.model, samples)
+        return FitObjectSampling(self, samples)
 
     def optimizing(self, N:int, q:Tuple[float,...], X:Tuple[float,...]) -> 'StanFit4Model':
         self._check_domain(X)
         if self.model is None: self.compile()
         data_dict = {'N':N, 'M':len(q), 'q':q, 'X':X}
         opt = self.model.optimizing(data=data_dict)
-        return FitObjectOptimizing(self.model, opt)
+        return FitObjectOptimizing(self, opt)
 
 
 class NormalQM(QM):
@@ -122,6 +122,7 @@ class NormalQM(QM):
     def __init__(self, mu:Distribution, sigma:Distribution):
         self.mu = mu
         self.sigma = sigma
+        self._distribution = Normal #to access corresponding distribution in fit
         parameters_dict = {'mu': self.mu, 'sigma': self.sigma}
         super().__init__(parameters_dict)
 
@@ -151,6 +152,7 @@ class GammaQM(QM):
     def __init__(self, alpha:Distribution, beta:Distribution):
         self.alpha = alpha
         self.beta = beta
+        self._distribution = Gamma #to access corresponding distribution in fit
         parameters_dict = {'alpha': self.alpha, 'beta': self.beta}
         super().__init__(parameters_dict)
 
@@ -167,7 +169,7 @@ class LognormalQM(QM):
     mu : Distribution
         location of the corresponding Normal distribution
     sigma : Distribution
-        sclae of the corresponding Normal distribution
+        scale of the corresponding Normal distribution
 
     Examples
     --------
@@ -180,6 +182,7 @@ class LognormalQM(QM):
     def __init__(self, mu:Distribution, sigma:Distribution):
         self.mu = mu
         self.sigma = sigma
+        self._distribution = Lognormal #to access corresponding distribution in fit
         parameters_dict = {'mu': self.mu, 'sigma': self.sigma}
         super().__init__(parameters_dict)
 
@@ -196,7 +199,7 @@ class WeibullQM(QM):
     alpha : Distribution
         Also called the shape of the Weibull
     sigma : Distribution
-        Also called the rate of the Weibull
+        Also called the scale of the Weibull
 
     Examples
     --------
@@ -209,6 +212,7 @@ class WeibullQM(QM):
     def __init__(self, alpha:Distribution, sigma:Distribution):
         self.alpha = alpha
         self.sigma = sigma
+        self._distribution = Weibull #to access corresponding distribution in fit
         parameters_dict = {'alpha': self.alpha, 'sigma': self.sigma}
         super().__init__(parameters_dict)
 
