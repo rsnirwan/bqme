@@ -64,12 +64,12 @@ sigma_posterior = fit.sigma
 # get stan sample object
 stan_samples = fit.stan_obj
 
-# get pdf and cdf of x_new (only on develop branch)
+# get pdf and cdf of x_new
 x_new = 1.0
 pdf_x = fit.pdf(x_new)
 cdf_x = fit.cdf(x_new)
 
-# get percent point function of q_new (inverse of cdf) (only on develop branch)
+# get percent point function of q_new (inverse of cdf)
 # default return values are samples from posterior predictive p(x|q)
 q_new = 0.2
 ppf_q = fit.ppf(q_new)  
@@ -96,7 +96,7 @@ fit = model.optimizing(N, q, X)
 mu_opt = fit.mu
 sigma_opt = fit.sigma
 
-# get pdf, cdf, ppf (only on develop branch)
+# get pdf, cdf, ppf
 pdf_x = fit.pdf(1.1)
 cdf_x = fit.cdf(1.1)
 ppf_q = fit.ppf(0.2)

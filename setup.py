@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="bqme",
-    version="0.1.0",
+    version="0.2.0",
     author="Rajbir Singh Nirwan",
     author_email="rajbir.nirwan@gmail.com",
     description="Bayesian Quanile Matching Estimation",
@@ -18,7 +18,7 @@ setuptools.setup(
         "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
         "Operating System :: OS Independent",
     ],
-    python_requires='>=3.6',
+    python_requires='>=3.7',
     install_requires=[
         'pystan>=2.19',
         'numpy>=1.19.2',
