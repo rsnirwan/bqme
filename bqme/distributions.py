@@ -29,7 +29,11 @@ class Distribution:
     def __repr__(self):
         return self.__str__()
 
-    def domain(self): pass
+    def domain(self) -> None:
+        """
+        Should be overridden by all subclasses
+        """
+        raise NotImplementedError
 
     def _stan_code(self) -> Dict[str, str]:
         #real is hard coded

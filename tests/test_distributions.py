@@ -3,7 +3,7 @@ import numpy as np
 import pystan
 from scipy.stats import norm, gamma, lognorm, weibull_min
 
-from bqme.distributions import Normal, Gamma, Lognormal, Weibull
+from bqme.distributions import Normal, Gamma, Lognormal, Weibull, Distribution
 
 distributions = [
     (Normal(mu=1., sigma=2., name='n'), norm(loc=1., scale=2.)),
@@ -122,6 +122,10 @@ def test_wrong_initialization():
         Normal(0, 0, name='mu')
     with pytest.raises(ValueError):
         Gamma(-1., 2, name='alpha')
+
+def test_domain_base():
+    with pytest.raises(NotImplementedError):
+        Distribution({}, 'some_name').domain()
 
 
 ### pdf

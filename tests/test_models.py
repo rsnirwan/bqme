@@ -15,6 +15,10 @@ def test_QM_expected_fail():
     with pytest.raises(ValueError):
         QM(parameters_dict)
 
+def test_domain_QM():
+    with pytest.raises(NotImplementedError):
+        QM({}).domain()
+
 
 ### NormalQM tests
 

@@ -75,7 +75,11 @@ class QM:
         if len(list(filter(f, X))) > 0:
             raise ValueError(f'some elements of X are not in the domain of the model, which is ({minn}, {maxx}).')
 
-    def domain(self): pass
+    def domain(self) -> None:
+        """
+        Should be overridden by all subclasses
+        """
+        raise NotImplementedError
 
     @property
     def code(self) -> str:
