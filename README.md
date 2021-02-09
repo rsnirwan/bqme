@@ -32,8 +32,17 @@ Install with dev dependencies
 git clone https://github.com/RSNirwan/bqme
 cd bqme
 pip install -e .[dev]
+# pip install -e ".[dev]"  # for ZSH users
 ```
-if using ZSH, do the following  `pip install -e ".[dev]"`
+
+After installing dev dependencies we can run tests
+
+```shell
+# only run fast tests
+python -m pytest --cov=bqme tests/ --cov-report term-missing
+# run all tests (also the one marked by slow) - roughly 10 min needed
+python -m pytest --cov=bqme tests/ --slow --cov-report term-missing
+```
 
 
 ## Usage
