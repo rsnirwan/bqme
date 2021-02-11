@@ -15,18 +15,18 @@ class Distribution:
     """
     def __init__(self,
             parameters_dict: Dict[str, Variable],
-            name: str):
+            name: str) -> None:
         self.name = name
         self.parameters_dict = parameters_dict
 
-    def __str__(self):
+    def __str__(self) -> str:
         params = {name:param.value for name, param in 
                     self.parameters_dict.items()}
         return self.__class__.__name__ + '(' +  \
             ', '.join([f'{k}={v}' for k,v in params.items()]) + \
             f', name="{self.name}"' + ')'
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return self.__str__()
 
     def domain(self) -> None:
@@ -107,7 +107,7 @@ class Normal(Distribution):
     def __init__(self,
             mu: float,
             sigma: float,
-            name: str):
+            name: str) -> None:
         self.mu = ContinuousVariable(mu, name='mu')
         self.sigma = PositiveContinuousVariable(sigma, name='sigma')
         self.name = name
@@ -142,7 +142,7 @@ class Gamma(Distribution):
     def __init__(self, 
             alpha: float,
             beta: float,
-            name: str):
+            name: str) -> None:
         self.alpha = PositiveContinuousVariable(alpha, name='alpha')
         self.beta = PositiveContinuousVariable(beta, name='beta')
         self.name = name
@@ -176,7 +176,7 @@ class Lognormal(Distribution):
     def __init__(self,
             mu: float,
             sigma: float,
-            name: str):
+            name: str) -> None:
         self.mu = ContinuousVariable(mu, name='mu')
         self.sigma = PositiveContinuousVariable(sigma, name='sigma')
         self.name = name
@@ -211,7 +211,7 @@ class Weibull(Distribution):
     def __init__(self, 
             alpha: float,
             sigma: float,
-            name: str):
+            name: str) -> None:
         self.alpha = PositiveContinuousVariable(alpha, name='alpha')
         self.sigma = PositiveContinuousVariable(sigma, name='sigma')
         self.name = name

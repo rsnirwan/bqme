@@ -2,7 +2,7 @@ class Variable:
     """
     Base class for different kind of variables
     """
-    def __init__(self, value:float, name:str, lower:float, upper:float):
+    def __init__(self, value:float, name:str, lower:float, upper:float) -> None:
         self.lower = lower
         self.upper = upper
         self.name = name
@@ -19,7 +19,7 @@ class ContinuousVariable(Variable):
     """
     container for continuous variables (-inf, inf)
     """
-    def __init__(self, value:float, name:str):
+    def __init__(self, value:float, name:str) -> None:
         lower = float('-inf')
         upper = float('inf')
         super().__init__(value, name, lower, upper)
@@ -29,7 +29,7 @@ class PositiveContinuousVariable(Variable):
     """
     container for positive continous variables (0, inf)
     """
-    def __init__(self, value:float, name:str):
+    def __init__(self, value:float, name:str) -> None:
         lower = 0.
         upper = float('inf')
         super().__init__(value, name, lower, upper)

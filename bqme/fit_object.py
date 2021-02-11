@@ -6,7 +6,7 @@ class FitObject:
     """
     Base class for the fit object
     """
-    def __getattr__(self, attr:str) -> 'numpy.ndarray':
+    def __getattr__(self, attr:str) -> np.ndarray:
         """
         allows to extract model parameters from fit object as attributes
         """
@@ -21,7 +21,7 @@ class FitObject:
         # return shape (#parameters, #samples) - #samples is one for MAP
         return np.array([self._access_parameter(name) for name in names])
 
-    def pdf(self, x:float or List[float], method='mean'):
+    def pdf(self, x:float or List[float], method:str='mean') -> np.ndarray:
         """
         Calculates the pdf of x using posterior samples or MAP estimate
 
@@ -40,7 +40,7 @@ class FitObject:
         f = lambda dist, param, x: dist(*param, name='a').pdf(x)
         return self._apply(f, x, method)
 
-    def cdf(self, x:float or List[float], method='mean'):
+    def cdf(self, x:float or List[float], method:str='mean') -> np.ndarray:
         """
         Calculates the cdf of x using posterior samples or MAP estimate
 
@@ -59,7 +59,7 @@ class FitObject:
         f = lambda dist, param, x: dist(*param, name='a').cdf(x)
         return self._apply(f, x, method)
 
-    def ppf(self, q:float or List[float], method='full'):
+    def ppf(self, q:float or List[float], method:str='full') -> np.ndarray:
         """
         Calculates the percent point funtion (ppf) of x using posterior samples or MAP estimate
 
@@ -84,7 +84,7 @@ class FitObjectSampling(FitObject):
     Fit object using posterior samples of the model.
     This is an extension of the 'StanFit4Model'-type by composition.
     """
-    def __init__(self, model:'QM', stan_fit_object:'StanFit4Model'):
+    def __init__(self, model:'QM', stan_fit_object:'StanFit4Model') -> None:
         self.model = model
         self.stan_obj = stan_fit_object
         self._catch_error_access_parameter = ValueError
@@ -116,12 +116,12 @@ class FitObjectOptimizing(FitObject):
     """
     Fit object using MAP estimate of the model
     """
-    def __init__(self, model:'QM', opt_parameters:Dict):
+    def __init__(self, model:'QM', opt_parameters:Dict) -> None:
         self.model = model
         self.opt = opt_parameters
         self._catch_error_access_parameter = KeyError
 
-    def _access_parameter(self, attr:str) -> 'numpy.ndarray':
+    def _access_parameter(self, attr:str) -> np.ndarray:
         return self.opt[attr]
 
     def _apply(self,

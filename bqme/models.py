@@ -22,25 +22,25 @@ class QM:
         e.g. 'mu', 'sigma' for a GaussianQM. Values are the user 
         defined Distributions. Note key must not be identical to value.name.
     """
-    def __init__(self, parameters_dict: Dict[str, Distribution]):
+    def __init__(self, parameters_dict: Dict[str, Distribution]) -> None:
         self.parameters_dict = self._check_dict(parameters_dict)
         self.model = None
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.__class__.__name__ + '(' +  \
             ', '.join([p.__str__() for p in self.parameters_dict.values()]) + \
             ')'
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return self.__str__()
 
-    def _check_dict(self, parameters_dict:Dict[str, Distribution]):
+    def _check_dict(self, parameters_dict:Dict[str, Distribution]) -> Dict[str, Distribution]:
         for key, value in parameters_dict.items():
             if not isinstance(value, Distribution):
                 raise ValueError(f'Input parameter "{key}" of "{self.__class__.__name__}" needs to be a Distribution (see bqme.distributions), but is of type {type(value)}.')
         return parameters_dict
 
-    def _template_replacements(self) -> Dict['str', 'str']:
+    def _template_replacements(self) -> Dict[str, str]:
         """
         returns a dict that contains keys as template variables
         and values are the strings for the variables.
@@ -69,7 +69,7 @@ class QM:
             code = code.replace(f'${k}$', v)
         return code
 
-    def _check_domain(self, X):
+    def _check_domain(self, X) -> None:
         minn, maxx = self.domain()
         f = lambda x: not(minn < x < maxx)
         if len(list(filter(f, X))) > 0:
@@ -86,7 +86,7 @@ class QM:
         """ returns the final stan code """
         return self._stan_code()
 
-    def compile(self):
+    def compile(self) -> None:
         self.model = StanModel(model_code=self.code)
 
     def sampling(self, N:int, q:Tuple[float,...], X:Tuple[float,...]) -> 'StanFit4Model':
@@ -123,7 +123,7 @@ class NormalQM(QM):
     NormalQM(Normal(mu=0.0, sigma=1.0, name="mu"), Gamma(alpha=1.0, beta=1.0, name="sigma"))
     >>> code = model.code
     """
-    def __init__(self, mu:Distribution, sigma:Distribution):
+    def __init__(self, mu:Distribution, sigma:Distribution) -> None:
         self.mu = mu
         self.sigma = sigma
         self._distribution = Normal #to access corresponding distribution in fit
@@ -153,7 +153,7 @@ class GammaQM(QM):
     GammaQM(Gamma(alpha=1.0, beta=1.0, name="alpha"), Gamma(alpha=1.0, beta=1.0, name="beta"))
     >>> code = model.code
     """
-    def __init__(self, alpha:Distribution, beta:Distribution):
+    def __init__(self, alpha:Distribution, beta:Distribution) -> None:
         self.alpha = alpha
         self.beta = beta
         self._distribution = Gamma #to access corresponding distribution in fit
@@ -183,7 +183,7 @@ class LognormalQM(QM):
     LognormalQM(Normal(mu=1.0, sigma=1.0, name="mu"), Lognormal(mu=1.0, sigma=1.0, name="sigma"))
     >>> code = model.code
     """
-    def __init__(self, mu:Distribution, sigma:Distribution):
+    def __init__(self, mu:Distribution, sigma:Distribution) -> None:
         self.mu = mu
         self.sigma = sigma
         self._distribution = Lognormal #to access corresponding distribution in fit
@@ -213,7 +213,7 @@ class WeibullQM(QM):
     WeibullQM(Weibull(alpha=1.0, sigma=1.0, name="alpha"), Weibull(alpha=1.0, sigma=1.0, name="sigma"))
     >>> code = model.code
     """
-    def __init__(self, alpha:Distribution, sigma:Distribution):
+    def __init__(self, alpha:Distribution, sigma:Distribution) -> None:
         self.alpha = alpha
         self.sigma = sigma
         self._distribution = Weibull #to access corresponding distribution in fit
